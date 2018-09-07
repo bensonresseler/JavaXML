@@ -1,7 +1,11 @@
 package com.company;
 
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -10,21 +14,27 @@ import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) throws SAXException, IOException {
+    public static void main(String[] args) throws SAXException, ParserConfigurationException, IOException {
+        SchemaFactory schemaFactory = SchemaFactory.newDefaultInstance();
+        Schema schema = schemaFactory.newSchema(new StreamSource("boeken.xsd"));
 
-        try {
-            SchemaFactory schemaFactory = SchemaFactory.newDefaultInstance();
-            Schema schema = schemaFactory.newSchema(new StreamSource("boeken.xsd"));
+        SAXParserFactory spf = SAXParserFactory.newDefaultInstance();
+        spf.setSchema(schema);
+        spf.setNamespaceAware(true);
+        SAXParser saxParser = spf.newSAXParser();
 
-            Validator validator = schema.newValidator();
-            validator.validate(new StreamSource("boeken.xml"));
+        saxParser.parse("boeken.xml",new MyContentHandler());
+    }
+}
 
-            System.out.println("Validatie is gelukt.");
+class MyContentHandler extends DefaultHandler {
+    @Override
+    public void startDocument() throws SAXException {
+        System.out.println("Start");
+    }
 
-        } catch (SAXException|IOException ex){
-            System.out.println(ex.getMessage());
-        }
-
-
+    @Override
+    public void endDocument() throws SAXException {
+        System.out.println("Stop");
     }
 }
