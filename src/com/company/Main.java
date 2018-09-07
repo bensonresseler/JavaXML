@@ -13,6 +13,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -25,12 +27,21 @@ public class Main {
         spf.setNamespaceAware(true);
         SAXParser saxParser = spf.newSAXParser();
 
-        saxParser.parse("boeken.xml",new MyContentHandler());
+        List<String> titels = new ArrayList<>();
+        saxParser.parse("boeken.xml",new MyContentHandler(titels));
+        System.out.println("De titels: ");
+        titels.forEach(System.out::println);
+
     }
 }
 
 class MyContentHandler extends DefaultHandler {
+    private List<String> titels = new ArrayList<>();
     private StringBuilder tekstBuilder = new StringBuilder();
+
+    public MyContentHandler(List<String> titels) {
+        this.titels = titels;
+    }
 
     @Override
     public void startDocument() throws SAXException {
@@ -49,7 +60,7 @@ class MyContentHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        System.out.printf("Begin element <%s>%n", localName);
+
     }
 
     @Override
@@ -59,7 +70,9 @@ class MyContentHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        System.out.printf("De tekst van %s is %s%n", localName, tekstBuilder.toString());
+        if (localName.equals("titel")){
+            titels.add(tekstBuilder.toString());
+        }
         tekstBuilder.setLength(0); // terug leegmaken
     }
 }
