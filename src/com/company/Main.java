@@ -27,20 +27,61 @@ public class Main {
         spf.setNamespaceAware(true);
         SAXParser saxParser = spf.newSAXParser();
 
-        List<String> titels = new ArrayList<>();
-        saxParser.parse("boeken.xml",new MyContentHandler(titels));
+        List<Boek> boeken = new ArrayList<>();
+        saxParser.parse("boeken.xml", new MyContentHandler(boeken));
         System.out.println("De titels: ");
-        titels.forEach(System.out::println);
+        boeken.forEach(System.out::println);
 
     }
 }
 
-class MyContentHandler extends DefaultHandler {
-    private List<String> titels = new ArrayList<>();
-    private StringBuilder tekstBuilder = new StringBuilder();
+class Boek {
+    private String titel;
+    private String auteur;
+    private String beoordeling;
 
-    public MyContentHandler(List<String> titels) {
-        this.titels = titels;
+    public String getTitel() {
+        return titel;
+    }
+
+    public void setTitel(String titel) {
+        this.titel = titel;
+    }
+
+    public String getAuteur() {
+        return auteur;
+    }
+
+    public void setAuteur(String auteur) {
+        this.auteur = auteur;
+    }
+
+    public String getBeoordeling() {
+        return beoordeling;
+    }
+
+    public void setBeoordeling(String beoordeling) {
+        this.beoordeling = beoordeling;
+    }
+
+    @Override
+    public String toString() {
+        return "Boek{" +
+                "titel='" + titel + '\'' +
+                ", auteur='" + auteur + '\'' +
+                ", beoordeling='" + beoordeling + '\'' +
+                '}';
+    }
+}
+
+class MyContentHandler extends DefaultHandler {
+    private StringBuilder tekstBuilder = new StringBuilder();
+    private List<Boek> boeken;
+    private Boek boek;
+
+
+    public MyContentHandler(List<Boek> boeken) {
+        this.boeken = boeken;
     }
 
     @Override
@@ -60,7 +101,9 @@ class MyContentHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-
+        if (localName.equals("boek")) {
+            boek = new Boek();
+        }
     }
 
     @Override
@@ -70,8 +113,14 @@ class MyContentHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        if (localName.equals("titel")){
-            titels.add(tekstBuilder.toString());
+         if (localName.equals("titel")) {
+            boek.setTitel(tekstBuilder.toString());
+        } if (localName.equals("auteur")) {
+            boek.setAuteur(tekstBuilder.toString());
+        } if (localName.equals("beoordeling")) {
+            boek.setBeoordeling(tekstBuilder.toString());
+        } else if (localName.equals("boek")){
+            boeken.add(boek);
         }
         tekstBuilder.setLength(0); // terug leegmaken
     }
