@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://beta.ua.ac.be/boeken"
+           elementFormDefault="qualified"
+           xmlns="http://beta.ua.ac.be/boeken"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="boeken">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="boek" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="titel" type="nietlegestringtype"/>
+                            <xs:element name="beoordeling" type="beoordelingstype" />
+                            <xs:element name="auteur" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="nietlegestringtype">
+                                            <xs:attribute name="geslacht" use="required">
+                                                <xs:simpleType>
+                                                    <xs:restriction base="xs:string">
+                                                        <xs:enumeration value="m" />
+                                                        <xs:enumeration value="v" />
+                                                    </xs:restriction>
+                                                </xs:simpleType>
+                                            </xs:attribute>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="jaartal" type="xs:gYear" default="2000"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:simpleType name="nietlegestringtype">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="beoordelingstype">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="slecht"/>
+            <xs:enumeration value="heel goed"/>
+            <xs:enumeration value="goed" />
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<boeken xmlns="http://beta.ua.ac.be/boeken"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://beta.ua.ac.be/boeken boeken.xsd">
+    <boek>
+        <titel>The HitchHiker's guide to the Galaxy</titel>
+        <beoordeling>heel goed</beoordeling>
+        <auteur geslacht="m">Douglas Adams</auteur>
+    </boek>
+    <boek>
+        <titel>Sense and sensibility</titel>
+        <beoordeling>goed</beoordeling>
+        <auteur geslacht="v">Jane Austin</auteur>
+    </boek>
+</boeken>
