@@ -1,6 +1,8 @@
 package com.company;
 
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -30,11 +32,21 @@ public class Main {
 class MyContentHandler extends DefaultHandler {
     @Override
     public void startDocument() throws SAXException {
-        System.out.println("Start");
+        System.out.println("Begin van het document.");
     }
 
     @Override
     public void endDocument() throws SAXException {
-        System.out.println("Stop");
+        System.out.println("Einde van het document.");
+    }
+
+    @Override
+    public void error(SAXParseException e) throws SAXException {
+        System.out.println("Er is een fout.");
+    }
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        System.out.println("Begin element " + "<" + localName + ">");
     }
 }
