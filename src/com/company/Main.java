@@ -30,6 +30,8 @@ public class Main {
 }
 
 class MyContentHandler extends DefaultHandler {
+    private StringBuilder tekstBuilder = new StringBuilder();
+
     @Override
     public void startDocument() throws SAXException {
         System.out.println("Begin van het document.");
@@ -47,6 +49,17 @@ class MyContentHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        System.out.println("Begin element " + "<" + localName + ">");
+        System.out.printf("Begin element <%s>%n", localName);
+    }
+
+    @Override
+    public void characters(char[] ch, int start, int length) throws SAXException {
+        tekstBuilder.append(ch, start, length);
+    }
+
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException {
+        System.out.printf("De tekst van %s is %s%n", localName, tekstBuilder.toString());
+        tekstBuilder.setLength(0); // terug leegmaken
     }
 }
