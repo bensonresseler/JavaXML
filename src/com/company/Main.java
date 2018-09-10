@@ -1,10 +1,7 @@
 package com.company;
 
-
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,10 +20,7 @@ public class Main {
         Document doc = db.parse("elements.xml");
         XPathFactory factory = XPathFactory.newDefaultInstance();
         XPath xpath = factory.newXPath();
-        javax.xml.xpath.XPathExpression expression =  xpath.compile("elements/element/symbol/text()");
-        NodeList symbolen = (NodeList) expression.evaluate(doc, XPathConstants.NODESET);
-        for (int i = 0; i < symbolen.getLength(); i++) {
-            System.out.println("Symbool: " + symbolen.item(i).getNodeValue());
-
+        String naam = (String)xpath.evaluate("elements/element[symbol='Sb']/name/text()",doc,XPathConstants.STRING);
+        System.out.printf("De naam van het symbool 'Sb' is %s.", naam);
     }
-}}
+}
