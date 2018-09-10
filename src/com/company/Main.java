@@ -19,26 +19,20 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws SAXException, ParserConfigurationException, IOException {
-        SchemaFactory schemaFactory = SchemaFactory.newDefaultInstance();
-        Schema schema = schemaFactory.newSchema(new StreamSource("boeken.xsd"));
-
         SAXParserFactory spf = SAXParserFactory.newDefaultInstance();
-        spf.setSchema(schema);
         spf.setNamespaceAware(true);
-        SAXParser saxParser = spf.newSAXParser();
+        SAXParser saxparser = spf.newSAXParser();
+        List<Film> films = new ArrayList<>();
+        saxparser.parse("films.xml", new MyContentHandler(films));
 
-        List<Boek> boeken = new ArrayList<>();
-        saxParser.parse("boeken.xml", new MyContentHandler(boeken));
-        System.out.println("De titels: ");
-        boeken.forEach(System.out::println);
-
+        films.forEach(System.out::println);
     }
 }
 
-class Boek {
+class Film {
     private String titel;
-    private String auteur;
-    private String beoordeling;
+    private String genre;
+    private int jaar;
 
     public String getTitel() {
         return titel;
@@ -48,80 +42,81 @@ class Boek {
         this.titel = titel;
     }
 
-    public String getAuteur() {
-        return auteur;
+    public String getGenre() {
+        return genre;
     }
 
-    public void setAuteur(String auteur) {
-        this.auteur = auteur;
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
-    public String getBeoordeling() {
-        return beoordeling;
+    public int getJaar() {
+        return jaar;
     }
 
-    public void setBeoordeling(String beoordeling) {
-        this.beoordeling = beoordeling;
+    public void setJaar(int jaar) {
+        this.jaar = jaar;
     }
 
     @Override
     public String toString() {
-        return "Boek{" +
+        return "Film{" +
                 "titel='" + titel + '\'' +
-                ", auteur='" + auteur + '\'' +
-                ", beoordeling='" + beoordeling + '\'' +
+                ", jaar='" + jaar + '\'' +
+                ", genre=" + genre +
                 '}';
     }
 }
 
 class MyContentHandler extends DefaultHandler {
     private StringBuilder tekstBuilder = new StringBuilder();
-    private List<Boek> boeken;
-    private Boek boek;
+    private List<Film> films;
+    private Film film;
 
-
-    public MyContentHandler(List<Boek> boeken) {
-        this.boeken = boeken;
+    public MyContentHandler(List<Film> films) {
+        this.films = films;
     }
 
     @Override
     public void startDocument() throws SAXException {
-        System.out.println("Begin van het document.");
+        System.out.println("Start document.");
     }
 
     @Override
     public void endDocument() throws SAXException {
-        System.out.println("Einde van het document.");
-    }
-
-    @Override
-    public void error(SAXParseException e) throws SAXException {
-        System.out.println("Er is een fout.");
-    }
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if (localName.equals("boek")) {
-            boek = new Boek();
-        }
+        System.out.println("Einde document.");
     }
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-        tekstBuilder.append(ch, start, length);
+        tekstBuilder.append(ch,start,length);
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-         if (localName.equals("titel")) {
-            boek.setTitel(tekstBuilder.toString());
-        } if (localName.equals("auteur")) {
-            boek.setAuteur(tekstBuilder.toString());
-        } if (localName.equals("beoordeling")) {
-            boek.setBeoordeling(tekstBuilder.toString());
-        } else if (localName.equals("boek")){
-            boeken.add(boek);
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        tekstBuilder.setLength(0);
+        if (localName.equals("film")) {
+            film = new Film();
+            for (int i = 0; i < attributes.getLength(); i++) {
+                film.setGenre(attributes.getValue(i));
+            }
         }
-        tekstBuilder.setLength(0); // terug leegmaken
+    }
+
+
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException {
+        switch (localName){
+            case "titel":
+                film.setTitel(tekstBuilder.toString());
+                break;
+            case "jaar":
+                film.setJaar(Integer.parseInt(tekstBuilder.toString()));
+                break;
+            case "film":
+                films.add(film);
+                break;
+        }
+        tekstBuilder.setLength(0);
     }
 }
