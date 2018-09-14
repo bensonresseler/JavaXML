@@ -20,7 +20,9 @@ public class Main {
         String titel = scanner.nextLine();
         System.out.print("Geef jaartal: ");
         int jaar = Integer.parseInt(scanner.nextLine());
-        createFilmElement(doc, titel, jaar);
+        System.out.print("Geef regisseur: ");
+        String regisseur = scanner.nextLine();
+        createFilmElement(doc, titel, jaar, regisseur);
         writeXMLFilm(doc);
     }
 
@@ -34,15 +36,18 @@ public class Main {
         ;
     }
 
-    private static void createFilmElement(Document doc, String titel, int jaar) {
+    private static void createFilmElement(Document doc, String titel, int jaar, String regisseur) {
         Element rootElement = doc.getDocumentElement();
         Element filmElement = doc.createElement("film");
         Element titelElement = doc.createElement("titel");
         Element jaarElement = doc.createElement("jaar");
+        Element regisseurElement = doc.createElement("regisseur");
         titelElement.setTextContent(titel);
         jaarElement.setTextContent(Integer.toString(jaar));
+        regisseurElement.setTextContent(regisseur);
         filmElement.appendChild(titelElement);
         filmElement.appendChild(jaarElement);
+        filmElement.appendChild(regisseurElement);
         rootElement.appendChild(filmElement);
     }
 
