@@ -18,6 +18,7 @@ public class Main {
         Scanner scanner= new Scanner(System.in);
         System.out.print("Geef bestandsnaam: ");
         String bestandsnaam = scanner.nextLine();
+        if (bestandsnaam.contains(".xml")) bestandsnaam = bestandsnaam.replaceAll(".xml", "");
         System.out.print("Geef filmtitel: ");
         String titel = scanner.nextLine();
         System.out.print("Geef jaartal: ");
