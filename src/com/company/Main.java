@@ -16,6 +16,8 @@ public class Main {
         Element rootElement = doc.createElement("films");
         doc.appendChild(rootElement);
         Scanner scanner= new Scanner(System.in);
+        System.out.print("Geef bestandsnaam: ");
+        String bestandsnaam = scanner.nextLine();
         System.out.print("Geef filmtitel: ");
         String titel = scanner.nextLine();
         System.out.print("Geef jaartal: ");
@@ -23,17 +25,17 @@ public class Main {
         System.out.print("Geef regisseur: ");
         String regisseur = scanner.nextLine();
         createFilmElement(doc, titel, jaar, regisseur);
-        writeXMLFilm(doc);
+        writeXMLFilm(doc, bestandsnaam);
     }
 
-    private static void writeXMLFilm(Document doc) throws TransformerException {
+    private static void writeXMLFilm(Document doc, String bestandsnaam) throws TransformerException {
         TransformerFactory tff = TransformerFactory.newDefaultInstance();
         Transformer transformer = tff.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult("films.xml");
+        String xmlPath = String.format("%s.xml", bestandsnaam);
+        StreamResult result = new StreamResult(xmlPath);
         transformer.transform(source, result);
-        ;
     }
 
     private static void createFilmElement(Document doc, String titel, int jaar, String regisseur) {
