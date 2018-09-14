@@ -1,64 +1,56 @@
 package com.company;
-
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
-import javax.management.Attribute;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
+    public static void main(String[] args) throws ParserConfigurationException, TransformerException {
+        Document doc = createXMLDocument();
+        Element rootElement = doc.createElement("films");
+        doc.appendChild(rootElement);
+        Scanner scanner= new Scanner(System.in);
+        System.out.print("Geef filmtitel: ");
+        String titel = scanner.nextLine();
+        System.out.print("Geef jaartal: ");
+        int jaar = Integer.parseInt(scanner.nextLine());
+        createFilmElement(doc, titel, jaar);
+        writeXMLFilm(doc);
+    }
 
-    public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException, TransformerException {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newDefaultInstance();
-        dbf.setIgnoringElementContentWhitespace(true);
-        dbf.setNamespaceAware(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse("boeken2.xml");
-
-        Element boekElement = doc.createElement("boek");
-        Element titelElement = doc.createElement("titel");
-        Element beoordelinglElement = doc.createElement("beoordeling");
-        Element auteurElement = doc.createElement("auteur");
-
-        doc.getDocumentElement().appendChild(boekElement);
-        boekElement.appendChild(titelElement);
-        boekElement.appendChild(beoordelinglElement);
-        boekElement.appendChild(auteurElement);
-
-        Text titelTekstElement = doc.createTextNode("Harry Potter and the Philosophers Stone");
-        Text beoordelingTekstElement = doc.createTextNode("heel goed");
-        Text auteurTekstElement = doc.createTextNode("J. K. Rowling");
-
-        titelElement.appendChild(titelTekstElement);
-        beoordelinglElement.appendChild(beoordelingTekstElement);
-        auteurElement.appendChild(auteurTekstElement);
-
-        auteurElement.setAttribute("geslacht", "v");
-
+    private static void writeXMLFilm(Document doc) throws TransformerException {
         TransformerFactory tff = TransformerFactory.newDefaultInstance();
         Transformer transformer = tff.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult("boeken2.xml");
+        StreamResult result = new StreamResult("films.xml");
         transformer.transform(source, result);
-        result = new StreamResult(System.out);
-        transformer.transform(source, result);
+        ;
+    }
+
+    private static void createFilmElement(Document doc, String titel, int jaar) {
+        Element rootElement = doc.getDocumentElement();
+        Element filmElement = doc.createElement("film");
+        Element titelElement = doc.createElement("titel");
+        Element jaarElement = doc.createElement("jaar");
+        titelElement.setTextContent(titel);
+        jaarElement.setTextContent(Integer.toString(jaar));
+        filmElement.appendChild(titelElement);
+        filmElement.appendChild(jaarElement);
+        rootElement.appendChild(filmElement);
+    }
+
+    private static Document createXMLDocument() throws ParserConfigurationException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newDefaultInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.newDocument();
+        doc.setXmlStandalone(true);
+        return doc;
     }
 }
